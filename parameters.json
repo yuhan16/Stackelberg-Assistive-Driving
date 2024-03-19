@@ -1,0 +1,36 @@
+{
+    "seed": 768432,
+
+    "total_type": 5, 
+    "type_pdf": [0.2, 0.3, 0.1, 0.2, 0.2],
+    "obstacle_pos": [[3,0], [4,1], [8,1]],
+    "destination_pos": [9, 0],
+
+    "dimx": 10,
+    "dimy": 3,
+    "dimv": 3,
+    "dimua": 6,
+    "dimub": 6,
+
+    "dimT": 5,
+    "dt": 1,
+    "sigma": [1,0,0,1,0],
+    "lam": 10,
+    "gam": 0.7,
+
+    "_cmt1": "meta-learning related parameters",
+    "alp": 1e-2,
+    "beta": 4e-2,
+
+    "_cmt2": "reward parameters. follower type = [normal, aggressive1, aggressive2, careful1, careful2]",
+    "terminal_reward": 5,
+    "l_reward": {"c1": [0, 0], "c2": [0.5, 1, 1.5], "c3": 10, "c4": 0},
+    "f_reward": [
+        {"type": 0, "c1": [0.5, 0.01], "c2": [0.5, 1, 1.5],   "c3": 10, "c4": 0},
+        {"type": 1, "c1": [1, 0.1],    "c2": [1, 2, 1.5],     "c3": 10, "c4": 0},
+        {"type": 2, "c1": [1.5, 0.1],  "c2": [1.5, 2.5, 1.5], "c3": 10, "c4": 0},
+        {"type": 3, "c1": [0.5, 0],    "c2": [0.5, 0.6, 1.5], "c3": 10, "c4": 1},
+        {"type": 4, "c1": [0.5, 0.01], "c2": [0.5, 0.5, 1.5], "c3": 10, "c4": 1}
+    ]
+    
+}
