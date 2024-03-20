@@ -44,7 +44,6 @@ class Leader:
                 # predict for all possible actions
                 for j in range(self.dimua):
                     for k in range(self.dimub):
-                        #S_tp1.append( self.dynamics(i,j,k) )    ##
                         S_tp1.append( self.p[:, i,j,k].argmax() )
             S_tp1 = list(set(S_tp1))    # get unique S_tp1
             S_set.append(S_tp1)
@@ -74,8 +73,7 @@ class Leader:
                     # compute composite utility ga_comb and gb_comp
                     ga_comp = self.ga[i, :] + self.gam * np.tensordot(self.p[:,i,:,:], VA[t+1,:], axes=(0,0))
                     gb_comp = gb[i, :] + self.gam * np.tensordot(self.p[:,i,:,:], VB[t+1,:], axes=(0,0))
-                    #if i == 82:     # DEBUG
-                    #    tmp = 1
+                    
                     # update leader's value function
                     VA[t, i], x_opt = self.meta.update_leader_t_s(ga_comp, gb_comp)
                     # update follower's value function
@@ -92,13 +90,11 @@ class Leader:
                     # update leader's value function
                     ga_comp = self.ga[i, :, 0].copy()
                     for j in range(self.dimua):
-                        #sid = self.dynamics(i, j, 0)        ##
-                        sid = self.p[:, i, j, 0].argmax()
+                        sid = self.p[:, i, j, 0].argmax()       # dynamics
                         ga_comp[j] += self.gam * VA[t+1, sid]
                     VA[t, i], ua_opt = np.max(ga_comp), np.argmax(ga_comp)
                     # update follower's value function
-                    #sid_tp1 = self.dynamics(i, ua_opt, 0)   ##
-                    sid_tp1 = self.p[:, i, ua_opt, 0].argmax()
+                    sid_tp1 = self.p[:, i, ua_opt, 0].argmax()  # dynamics
                     VB[t, i] = gb[i, ua_opt, 0] + self.gam * VB[t+1, sid_tp1]
                     # record trajectory
                     ua[t,i, ua_opt] = 1
@@ -219,8 +215,6 @@ class Follower:
             for s_t in S_t:
                 # predict S_tp1 and append to S_tp1
                 x, y = ua[t, s_t, :], ub_samp[t, s_t, :]
-                if y.sum() == 0:    # DEBGU
-                    tmp = 1     # for testing, make sure the correct follower's response is used
                 prob_tp1 = np.tensordot( np.tensordot(self.p[:,s_t,:,:], x, axes=(1,0)), y, axes=(1,0) )
                 S_tp1 += np.nonzero(prob_tp1)[0].tolist()
             S_tp1 = list(set(S_tp1))    # prune S_tp1
@@ -349,13 +343,11 @@ class Meta(Leader):
                     # update leader's value function
                     ga_comp = self.ga[i, :, 0].copy()
                     for j in range(self.dimua):
-                        #sid = self.dynamics(i, j, 0)    ##
-                        sid = self.p[:, i, j, 0].argmax()
+                        sid = self.p[:, i, j, 0].argmax()       # dynamics
                         ga_comp[j] += self.gam * VA[t+1, sid]
                     VA[t, i], ua_opt = np.max(ga_comp), np.argmax(ga_comp)
                     # update follower's value function
-                    #sid_tp1 = self.dynamics(i, ua_opt, 0)   ##
-                    sid_tp1 = self.p[:, i, ua_opt, 0].argmax()
+                    sid_tp1 = self.p[:, i, ua_opt, 0].argmax()  # dynamics
                     VB[t, i] = g_meta[i, ua_opt, 0] + self.gam * VB[t+1, sid_tp1]
         return g_meta, cost_s_t_batch
 
@@ -380,8 +372,8 @@ class Meta(Leader):
         gb_new = gb - self.beta / len(task_batch) * grad_meta
         
         # compute extract quantity for plotting and printing
-        #cost_s_t_batch = np.zeros((len(task_batch,2)))     # record meta_cost at each s and t and task batch.
-        cost_s_t_batch = np.zeros(len(task_batch))          # record meta_cost at each s and t.
+        #cost_s_t_batch = np.zeros((len(task_batch,2)))     # record meta_cost at each s and t and task batch
+        cost_s_t_batch = np.zeros(len(task_batch))          # record meta_cost at each s and t
         for i in range(len(task_batch)):
             #cost_s_t_batch[i, 0] = self.compute_loss(D_train_t_s[i], D_test_t_s[i], gb)
             #cost_s_t_batch[i, 1] = task_batch[i]
